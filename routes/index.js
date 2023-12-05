@@ -24,5 +24,6 @@ router.get('/files', FilesController.getIndex);
 router.put('/files/:id/publish', FilesController.putPublish);
 router.put('/files/:id/unpublish', FilesController.putUnpublish);
 router.get('/files/:id/data', FilesController.getFile);
+router.post('/files', FilesController.postUpload); // Upload image in background
 
 module.exports = router;

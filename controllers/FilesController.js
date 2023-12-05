@@ -114,8 +114,12 @@ class FilesController {
         return res.status(404).json({ error: 'Not found' });
       }
 
-      // Return the file document
-      return res.status(200).json(file);
+      if (type === 'image') {
+        const job = await fileQueue.add({ userId, fileId });
+      }
+  
+      // Return the new file with a status code 201
+      return res.status(201).json(newFile);
     } catch (error) {
       console.error(`Error retrieving file: ${error}`);
       return res.status(500).json({ error: 'Internal Server Error' });
@@ -279,13 +283,24 @@ class FilesController {
       // Get the MIME-type based on the name of the file
       const mimeType = mime.lookup(file.name);
 
-      // Return the content of the file with the correct MIME-type
-      return res.status(200).contentType(mimeType).sendFile(localPath);
+      const size = req.query.size;
+
+        // If size is specified, append it to the filename for thumbnail retrieval
+        const thumbnailPath = size ? `${localPath}_${size}` : localPath;
+
+        // Check if the local file exists
+        if (!fs.existsSync(thumbnailPath)) {
+        return res.status(404).json({ error: 'Not found' });
+        }
+
+        // Return the content of the file with the correct MIME-type
+        return res.status(200).contentType(mimeType).sendFile(thumbnailPath);
     } catch (error) {
       console.error(`Error retrieving file data: ${error}`);
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
 }
 
 module.exports = FilesController;
