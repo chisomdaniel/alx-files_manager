@@ -239,6 +239,53 @@ class FilesController {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
+
+  static async getFile(req, res) {
+    const { 'x-token': token } = req.headers;
+    const { id } = req.params;
+
+    try {
+      // Retrieve the user ID from Redis based on the token
+      const userId = await redisClient.client.get(`auth_${token}`);
+
+      // Get the file document based on the ID
+      const filesCollection = dbClient.client.db().collection('files');
+      const file = await filesCollection.findOne({ _id: ObjectId(id) });
+
+      // If no file document is linked to the ID, return Not found
+      if (!file) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      // Check if the file is public or the user is authenticated and the owner
+      const isOwnerOrPublic = file.isPublic || (userId && userId === file.userId.toString());
+
+      // If the file is not public and the user is not authenticated or not the owner, return Not found
+      if (!isOwnerOrPublic) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      // If the type of the file document is folder, return A folder doesn't have content
+      if (file.type === 'folder') {
+        return res.status(400).json({ error: "A folder doesn't have content" });
+      }
+
+      // Check if the file is locally present
+      const localPath = file.localPath;
+      if (!localPath || !fs.existsSync(localPath)) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      // Get the MIME-type based on the name of the file
+      const mimeType = mime.lookup(file.name);
+
+      // Return the content of the file with the correct MIME-type
+      return res.status(200).contentType(mimeType).sendFile(localPath);
+    } catch (error) {
+      console.error(`Error retrieving file data: ${error}`);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 }
 
 module.exports = FilesController;
