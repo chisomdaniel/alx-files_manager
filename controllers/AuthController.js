@@ -1,7 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
-const redisClient = require('../utils/redis');
 const { ObjectId } = require('mongodb');
 const crypto = require('crypto');
+const redisClient = require('../utils/redis');
+const dbClient = require('../utils/db');
 
 class AuthController {
   static async getConnect(req, res) {
