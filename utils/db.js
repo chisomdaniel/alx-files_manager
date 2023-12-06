@@ -11,15 +11,15 @@ class DBClient {
     const uri = `mongodb://${host}:${port}/${database}`;
 
     // Create MongoDB client
-    this.client = new MongoClient(uri, { useUnifiedTopology: true });
+    this.client = new MongoClient(uri);
 
     // Connect to MongoDB
     this.client.connect()
       .then(() => {
-        console.log('Connected to MongoDB');
+        // console.log('Connected to MongoDB');
       })
       .catch((err) => {
-        console.error(`Error connecting to MongoDB: ${err}`);
+        // console.error(`Error connecting to MongoDB: ${err}`);
       });
   }
 
