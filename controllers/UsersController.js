@@ -1,6 +1,6 @@
 const { ObjectId } = require('mongodb');
-const dbClient = require('../utils/db');
 const crypto = require('crypto');
+const dbClient = require('../utils/db');
 
 class UsersController {
   static async postNew(req, res) {
