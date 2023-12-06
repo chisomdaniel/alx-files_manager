@@ -1,3 +1,5 @@
+import util from 'util';
+
 const redis = require('redis');
 
 class RedisClient {
@@ -8,6 +10,7 @@ class RedisClient {
     this.client.on('error', (err) => {
       console.error(`Redis client error: ${err}`);
     });
+    this.getValue = util.promisify(this.client.get).bind(this.client);
   }
 
   isAlive() {
@@ -15,6 +18,12 @@ class RedisClient {
     return this.client.connected;
   }
 
+  async get(key) {
+    const value = await this.getValue(key);
+    return value;
+  }
+
+  /*
   async get(key) {
     return new Promise((resolve, reject) => {
       // Retrieve value from Redis for the given key
@@ -27,6 +36,7 @@ class RedisClient {
       });
     });
   }
+*/
 
   async set(key, value, duration) {
     return new Promise((resolve, reject) => {

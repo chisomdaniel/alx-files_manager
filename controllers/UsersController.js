@@ -62,7 +62,7 @@ class UsersController {
       const usersCollection = dbClient.client.db().collection('users');
 
       // Retrieve the user ID from Redis based on the token
-      const userId = await redisClient.client.get(`auth_${token}`);
+      const userId = await redisClient.get(`auth_${token}`);
 
       // If user not found, return Unauthorized
       if (!userId) {

@@ -1,5 +1,5 @@
+// import ObjectId from 'mongodb';
 const { v4: uuidv4 } = require('uuid');
-const { ObjectId } = require('mongodb');
 const crypto = require('crypto');
 const redisClient = require('../utils/redis');
 const dbClient = require('../utils/db');
@@ -56,7 +56,7 @@ class AuthController {
 
     try {
       // Retrieve the user ID from Redis based on the token
-      const userId = await redisClient.client.get(`auth_${token}`);
+      const userId = await redisClient.get(`auth_${token}`);
 
       // If user not found, return Unauthorized
       if (!userId) {
@@ -64,7 +64,7 @@ class AuthController {
       }
 
       // Delete the token in Redis
-      await redisClient.client.del(`auth_${token}`);
+      await redisClient.del(`auth_${token}`);
 
       // Return nothing with a status code 204
       return res.status(204).send();

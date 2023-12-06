@@ -18,6 +18,7 @@
     "chai-http": "^4.3.0",
     "image-thumbnail": "^1.0.10",
     "mime-types": "^2.1.27",
+    "mongodb": "^3.7.4",
     "redis": "^2.8.0",
     "sha1": "^1.1.1",
     "uuid": "^8.2.0"
@@ -37,7 +38,6 @@
     "eslint-plugin-jest": "^22.17.0",
     "express": "^4.18.2",
     "mocha": "^6.2.2",
-    "mongodb": "^3.7.4",
     "nodemon": "^2.0.2",
     "request": "^2.88.0",
     "sinon": "^7.5.0"
